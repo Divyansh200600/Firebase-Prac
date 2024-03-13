@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Registration Form</title>
+  <!---Custom CSS File--->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <input type="checkbox" id="check">
+    <div class="login form">
+      <header>Login</header>
+      <form id="loginForm">
+        <input type="email" placeholder="Enter your email" id="loginEmail">
+        <input type="password" placeholder="Enter your password" id="loginPassword">
+        <a href="#">Forgot password?</a>
+        <input type="button" class="button" value="Login" id="loginButton">
+
+      </form>
+      <div class="signup">
+        <span class="signup">Don't have an account?
+          <label for="check">Signup</label>
+        </span>
+      </div>
+    </div>
+    <div class="registration form">
+      <header>Signup</header>
+      <form id="signupForm">
+        <input type="email" placeholder="Enter your email" id="signupEmail">
+        <input type="password" placeholder="Create a password" id="signupPassword">
+        <input type="password" placeholder="Confirm your password" id="confirmPassword">
+        <input type="button" class="button" value="Signup" id="signupButton">
+        <p id="signupMessage"></p> <!-- Element to display signup message -->
+      </form>
+      <div class="signup">
+        <span class="signup">Already have an account?
+          <label for="check">Login</label>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    // My web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDWx5Sc55CRfTm37dijP_EtMON0ufAPZL8",
+      authDomain: "fir-prac-a6320-51902.firebaseapp.com",
+      projectId: "fir-prac-a6320",
+      storageBucket: "fir-prac-a6320.appspot.com",
+      messagingSenderId: "811674990737",
+      appId: "1:811674990737:web:ae6c433e6c44ecd415a730",
+      measurementId: "G-MGJNWN0ESB"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginButton = document.getElementById('loginButton');
+
+    loginButton.addEventListener('click', () => {
+      const email = loginEmail.value;
+      const password = loginPassword.value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Login successful
+          const user = userCredential.user;
+          console.log('Login successful:', user);
+          // Redirect user to landing page
+          window.location.href = "public/landing.html"; // Replace with your landing page URL
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error('Login error:', error.message);
+        });
+    });
+
+    const signupForm = document.getElementById('signupForm');
+    const signupEmail = document.getElementById('signupEmail');
+    const signupPassword = document.getElementById('signupPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const signupButton = document.getElementById('signupButton');
+    const signupMessage = document.getElementById('signupMessage');
+
+    signupButton.addEventListener('click', () => {
+      const email = signupEmail.value;
+      const password = signupPassword.value;
+      const confirmPass = confirmPassword.value;
+
+      if (password !== confirmPass) {
+        console.error('Passwords do not match');
+        return;
+      }
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signup successful
+          const user = userCredential.user;
+          console.log('Signup successful:', user);
+          // Display signup message
+          signupMessage.textContent = 'Signup successful! Redirecting to login page...';
+          // Redirect user to login page after 2 seconds
+          setTimeout(() => {
+            window.location.href = "index.html"; // Replace with your login page URL
+          }, 2000);
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error('Signup error:', error.message);
+        });
+    });
+  </script>
+</body>
+
+</html>
